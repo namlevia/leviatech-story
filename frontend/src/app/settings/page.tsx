@@ -7,7 +7,7 @@ import { useToast } from "@/components/ui/Toast";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
 
-type Tab = "general" | "backends" | "genres" | "sub_genres" | "styles" | "tones" | "prompts";
+type Tab = "general" | "backends" | "genres" | "sub_genres" | "styles" | "tones" | "pov" | "pronouns" | "prompts";
 
 const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message }: any) => {
   if (!isOpen) return null;
@@ -42,13 +42,15 @@ export default function SettingsPage() {
   const [styles, setStyles] = useState<any[]>([]);
 
   const [tones, setTones] = useState<any[]>([]);
+  const [povs, setPovs] = useState<any[]>([]);
+  const [pronouns, setPronouns] = useState<any[]>([]);
   const [prompts, setPrompts] = useState<any>(null);
   const { toast } = useToast();
 
   const loadData = async (silent = false) => {
     if (!silent) setLoading(true);
     try {
-      const [bData, cfgData, gData, sgData, stData, tnData, pData] = await Promise.all([
+      const [bData, cfgData, gData, sgData, stData, tnData, povData, proData, pData] = await Promise.all([
         api.getBackends().catch(() => []),
         api.getGenerationConfig().catch(() => ({
           temperature: 0.7,
@@ -60,6 +62,8 @@ export default function SettingsPage() {
         api.getDataItems('sub_genres').catch(() => []),
         api.getDataItems('styles').catch(() => []),
         api.getDataItems('tones').catch(() => []),
+        api.getDataItems('pov').catch(() => []),
+        api.getDataItems('pronouns').catch(() => []),
         api.getPrompts().catch(() => ({}))
       ]);
       setBackends(bData);
@@ -68,6 +72,8 @@ export default function SettingsPage() {
       setSubGenres(sgData);
       setStyles(stData);
       setTones(tnData);
+      setPovs(povData);
+      setPronouns(proData);
       setPrompts(pData);
     } catch (err) {
       console.error(err);
@@ -96,6 +102,8 @@ export default function SettingsPage() {
     { id: "sub_genres", label: "Chủ Đề Con", icon: LayoutList },
     { id: "styles", label: "Văn Phong", icon: PenTool },
     { id: "tones", label: "Giọng Điệu", icon: PenTool },
+    { id: "pov", label: "Góc Nhìn (POV)", icon: Eye },
+    { id: "pronouns", label: "Xưng Hô", icon: Edit2 },
     { id: "prompts", label: "Prompt Hệ Thống", icon: Edit2 },
   ];
 
@@ -136,12 +144,14 @@ export default function SettingsPage() {
             </div>
           ) : (
             <div className="min-h-full">
-              {activeTab === "general" && <GeneralConfig config={config} styles={styles} tones={tones} refresh={loadData} />}
+              {activeTab === "general" && <GeneralConfig config={config} styles={styles} tones={tones} povs={povs} pronouns={pronouns} refresh={loadData} />}
               {activeTab === "backends" && <BackendConfig backends={backends} refresh={loadData} />}
               {activeTab === "genres" && <DataConfig type="genres" title="Thể Loại Truyện" data={genres} refresh={loadData} />}
               {activeTab === "sub_genres" && <DataConfig type="sub_genres" title="Chủ Đề Con" data={subGenres} refresh={loadData} />}
               {activeTab === "styles" && <DataConfig type="styles" title="Văn Phong (Styles)" data={styles} refresh={loadData} />}
               {activeTab === "tones" && <DataConfig type="tones" title="Giọng Điệu (Tones)" data={tones} refresh={loadData} />}
+              {activeTab === "pov" && <DataConfig type="pov" title="Góc Nhìn (POV)" data={povs} refresh={loadData} />}
+              {activeTab === "pronouns" && <DataConfig type="pronouns" title="Đại Từ Xưng Hô" data={pronouns} refresh={loadData} />}
               {activeTab === "prompts" && <PromptsConfig prompts={prompts} refresh={loadData} />}
             </div>
           )}
@@ -152,12 +162,14 @@ export default function SettingsPage() {
 }
 
 // 1. General Config Component
-function GeneralConfig({ config, styles, tones, refresh }: { config: any, styles: any[], tones: any[], refresh: (silent?: boolean) => void }) {
+function GeneralConfig({ config, styles, tones, povs, pronouns, refresh }: { config: any, styles: any[], tones: any[], povs: any[], pronouns: any[], refresh: (silent?: boolean) => void }) {
   const [form, setForm] = useState(config || {
     temperature: 0.7,
     chapter_target_words: 2000,
     writing_style: "Tiên Hiệp",
     writing_tone: "Bi tráng",
+    pov: "Ngôi thứ 3 hạn chế",
+    pronouns: "Anime / Light Novel"
   });
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -248,6 +260,40 @@ function GeneralConfig({ config, styles, tones, refresh }: { config: any, styles
               <option key={i} value={t.name} className="bg-zinc-900 text-text-main">{t.name}</option>
             ))}
           </select>
+        </div>
+        <div className="space-y-2 p-4 bg-bg-input rounded-xl border border-border-soft">
+          <label className="text-sm font-medium text-text-muted">Góc nhìn (POV) mặc định</label>
+          <select
+            value={form.pov}
+            onChange={e => setForm({...form, pov: e.target.value})}
+            className="select w-full"
+          >
+            {povs?.map((p, i) => (
+              <option key={i} value={p.name} className="bg-zinc-900 text-text-main">{p.name}</option>
+            ))}
+          </select>
+          {form.pov && povs?.find(p => p.name === form.pov)?.description && (
+            <div className="text-xs text-text-subtle mt-1.5 italic">
+              {povs.find(p => p.name === form.pov)?.description}
+            </div>
+          )}
+        </div>
+        <div className="space-y-2 p-4 bg-bg-input rounded-xl border border-border-soft">
+          <label className="text-sm font-medium text-text-muted">Đại từ xưng hô mặc định</label>
+          <select
+            value={form.pronouns}
+            onChange={e => setForm({...form, pronouns: e.target.value})}
+            className="select w-full"
+          >
+            {pronouns?.map((p, i) => (
+              <option key={i} value={p.name} className="bg-zinc-900 text-text-main">{p.name}</option>
+            ))}
+          </select>
+          {form.pronouns && pronouns?.find(p => p.name === form.pronouns)?.description && (
+            <div className="text-xs text-text-subtle mt-1.5 italic">
+              {pronouns.find(p => p.name === form.pronouns)?.description}
+            </div>
+          )}
         </div>
       </div>
       <p className="text-xs text-text-subtle mt-4 italic">
@@ -489,11 +535,12 @@ function BackendConfig({ backends, refresh }: { backends: any[], refresh: (silen
                       <option key={idx} value={m} />
                     )) : (
                       <>
-                        {form.type === 'openai' && <><option value="gpt-4o" /><option value="gpt-4-turbo" /><option value="gpt-3.5-turbo" /></>}
-                        {form.type === 'gemini' && <><option value="gemini-1.5-pro" /><option value="gemini-1.5-flash" /><option value="gemini-1.0-pro" /></>}
-                        {form.type === 'anthropic' && <><option value="claude-3-5-sonnet-20240620" /><option value="claude-3-opus-20240229" /><option value="claude-3-haiku-20240307" /></>}
-                        {form.type === 'groq' && <><option value="llama3-70b-8192" /><option value="llama3-8b-8192" /><option value="mixtral-8x7b-32768" /></>}
-                        {form.type === 'ollama' && <><option value="llama3" /><option value="qwen2" /><option value="phi3" /></>}
+                        {form.type === 'openai' && <><option value="gpt-5.4" /><option value="gpt-5-turbo" /><option value="gpt-4o" /></>}
+                        {form.type === 'gemini' && <><option value="gemini-3-pro" /><option value="gemini-3-flash" /><option value="gemini-2.5-pro" /></>}
+                        {form.type === 'anthropic' && <><option value="claude-5-fable" /><option value="claude-4.8-opus" /><option value="claude-4.6-sonnet" /><option value="claude-4.5-haiku" /></>}
+                        {form.type === 'deepseek' && <><option value="deepseek-v4-pro" /><option value="deepseek-v4-flash" /></>}
+                        {form.type === 'groq' && <><option value="llama-4-100b" /><option value="mixtral-9x9b" /></>}
+                        {form.type === 'ollama' && <><option value="llama3.2" /><option value="qwen2.5" /><option value="phi4" /></>}
                       </>
                     )}
                   </datalist>
@@ -528,8 +575,7 @@ function BackendConfig({ backends, refresh }: { backends: any[], refresh: (silen
   );
 }
 
-// 3. Data Config Component (Genres, Sub-genres, Styles)
-function DataConfig({ type, title, data, refresh }: { type: 'genres' | 'sub_genres' | 'styles' | 'tones', title: string, data: any[], refresh: () => void }) {
+function DataConfig({ type, title, data, refresh }: { type: 'genres' | 'sub_genres' | 'styles' | 'tones' | 'pov' | 'pronouns', title: string, data: any[], refresh: () => void }) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ name: '', description: '' });
@@ -660,12 +706,14 @@ function DataConfig({ type, title, data, refresh }: { type: 'genres' | 'sub_genr
         )}
 
         {/* Alphabet Filter Bar */}
-        <div className="flex overflow-x-auto py-2 gap-2 custom-scrollbar items-center border border-border-soft rounded-xl bg-bg-panel px-3 mb-6 shrink-0 w-full">
-            <button onClick={(e) => { setLetterFilter(""); setSearch(""); e.currentTarget.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" }); }} className={`shrink-0 px-3 h-7 md:px-4 md:h-8 flex items-center justify-center rounded-full text-[10px] md:text-xs font-bold transition-colors ${!letterFilter ? 'bg-brand-primary text-text-main shadow-lg shadow-brand-primary/20' : 'text-text-subtle hover:bg-white/10 hover:text-text-main'}`}>Tất cả</button>
-            {activeAlphabet.map(l => (
-              <button key={l} onClick={(e) => { setLetterFilter(letterFilter === l ? "" : l); setSearch(""); e.currentTarget.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" }); }} className={`shrink-0 w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full text-[10px] md:text-xs font-bold transition-colors ${letterFilter === l ? 'bg-brand-primary text-text-main shadow-lg shadow-brand-primary/20' : 'text-text-subtle hover:bg-white/10 hover:text-text-main'}`}>{l}</button>
-            ))}
-        </div>
+        {data.length > 10 && (
+          <div className="flex overflow-x-auto py-2 gap-2 custom-scrollbar items-center border border-border-soft rounded-xl bg-bg-panel px-3 mb-6 shrink-0 w-full">
+              <button onClick={(e) => { setLetterFilter(""); setSearch(""); e.currentTarget.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" }); }} className={`shrink-0 px-3 h-7 md:px-4 md:h-8 flex items-center justify-center rounded-full text-[10px] md:text-xs font-bold transition-colors ${!letterFilter ? 'bg-brand-primary text-text-main shadow-lg shadow-brand-primary/20' : 'text-text-subtle hover:bg-white/10 hover:text-text-main'}`}>Tất cả</button>
+              {activeAlphabet.map(l => (
+                <button key={l} onClick={(e) => { setLetterFilter(letterFilter === l ? "" : l); setSearch(""); e.currentTarget.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" }); }} className={`shrink-0 w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full text-[10px] md:text-xs font-bold transition-colors ${letterFilter === l ? 'bg-brand-primary text-text-main shadow-lg shadow-brand-primary/20' : 'text-text-subtle hover:bg-white/10 hover:text-text-main'}`}>{l}</button>
+              ))}
+          </div>
+        )}
 
         <div className="flex flex-col gap-6">
           {/* List Data */}

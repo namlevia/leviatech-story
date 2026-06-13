@@ -163,4 +163,6 @@ var (
 	SubGenreManager = NewDataManager("sub_genres.json")
 	StyleManager    = NewDataManager("writing_styles.json")
 	ToneManager     = NewDataManager("tones.json")
+	PovManager      = NewDataManager("pov.json")
+	PronounManager  = NewDataManager("pronouns.json")
 )

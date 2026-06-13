@@ -19,6 +19,8 @@ type NovelProject struct {
 	Title            string    `json:"title"`
 	Genre            string    `json:"genre"`
 	SubGenres        []string  `json:"sub_genres"`
+	Pov              string    `json:"pov"`
+	Pronouns         string    `json:"pronouns"`
 	CharacterSetting string    `json:"character_setting"`
 	WorldSetting     string    `json:"world_setting"`
 	PlotIdea         string    `json:"plot_idea"`

@@ -142,6 +142,7 @@ func ParseOutline(outlineText string) ([]core.Chapter, string) {
 func (g *NovelGenerator) GenerateOutline(
 	title, genre string,
 	subGenres []string,
+	pov, pronouns string,
 	totalChapters int,
 	characterSetting, worldSetting, plotIdea, customOutlinePrompt string,
 ) (string, string) {
@@ -192,6 +193,8 @@ func (g *NovelGenerator) GenerateOutline(
 		"character_setting": characterSetting,
 		"world_setting":     worldSetting,
 		"plot_idea":         plotIdea,
+		"pov":               pov,
+		"pronouns":          pronouns,
 		"style_desc":        styleDesc,
 		"custom_prompt":     customPromptStr,
 		"total_chapters":    totalChapters,
@@ -215,7 +218,7 @@ func (g *NovelGenerator) GenerateChapterStream(
 	projectID string,
 	chapterNum int,
 	chapterTitle, chapterDesc, novelTitle, characterSetting, worldSetting, plotIdea, genre string,
-	subGenres []string, previousContent, contextSummary, customPrompt string, useReflection bool,
+	subGenres []string, pov, pronouns, previousContent, contextSummary, customPrompt string, useReflection bool,
 	streamChan chan<- StreamChunk,
 ) {
 	defer close(streamChan)
@@ -279,6 +282,8 @@ func (g *NovelGenerator) GenerateChapterStream(
 		"character_setting": characterSetting,
 		"world_setting":     worldSetting,
 		"plot_idea":         plotIdea,
+		"pov":               pov,
+		"pronouns":          pronouns,
 		"style_desc":        styleDesc,
 		"target_words":      targetWords,
 		"continuity_prompt": continuityPrompt,
@@ -654,7 +659,7 @@ func (g *NovelGenerator) PolishText(text, polishType, customRequirements string,
 }
 
 func (g *NovelGenerator) ContinueWritingStream(
-	novelTitle, characterSetting, worldSetting, plotIdea, existingContent, customPrompt string,
+	novelTitle, characterSetting, worldSetting, plotIdea, pov, pronouns, existingContent, customPrompt string,
 	targetWords int,
 	useReflection bool,
 	streamChan chan<- StreamChunk,
@@ -676,7 +681,10 @@ func (g *NovelGenerator) ContinueWritingStream(
 		"character_setting": characterSetting,
 		"world_setting":     worldSetting,
 		"plot_idea":         plotIdea,
-		"existing_content":  contentForContext,
+		"pov":               pov,
+		"pronouns":          pronouns,
+		"style_desc":        g.buildStyleDescription(),
+		"previous_content":  contentForContext,
 		"target_words":      targetWords,
 	})
 

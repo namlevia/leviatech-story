@@ -53,4 +53,6 @@ func SetupDataRoutes(app *fiber.App) {
 	createDataHandlers(app, "sub_genres", services.SubGenreManager)
 	createDataHandlers(app, "styles", services.StyleManager)
 	createDataHandlers(app, "tones", services.ToneManager)
+	createDataHandlers(app, "pov", services.PovManager)
+	createDataHandlers(app, "pronouns", services.PronounManager)
 }

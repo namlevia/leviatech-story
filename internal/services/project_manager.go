@@ -17,7 +17,7 @@ func NewProjectManager() *ProjectManager {
 	return &ProjectManager{}
 }
 
-func (pm *ProjectManager) CreateProject(title, genre string, subGenres []string, charSetting, worldSetting, plotIdea string) (*core.NovelProject, error) {
+func (pm *ProjectManager) CreateProject(title, genre string, subGenres []string, pov, pronouns, charSetting, worldSetting, plotIdea string) (*core.NovelProject, error) {
 	if strings.TrimSpace(title) == "" {
 		return nil, fmt.Errorf("title cannot be empty")
 	}
@@ -30,6 +30,8 @@ func (pm *ProjectManager) CreateProject(title, genre string, subGenres []string,
 		Title:            strings.TrimSpace(title),
 		Genre:            strings.TrimSpace(genre),
 		SubGenres:        subGenres,
+		Pov:              strings.TrimSpace(pov),
+		Pronouns:         strings.TrimSpace(pronouns),
 		CharacterSetting: strings.TrimSpace(charSetting),
 		WorldSetting:     strings.TrimSpace(worldSetting),
 		PlotIdea:         strings.TrimSpace(plotIdea),
@@ -61,17 +63,19 @@ func (pm *ProjectManager) SaveProject(p *core.NovelProject) error {
 	}
 
 	_, err = tx.Exec(`INSERT INTO projects 
-		(id, title, genre, sub_genres, character_setting, world_setting, plot_idea, created_at, updated_at) 
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+		(id, title, genre, sub_genres, pov, pronouns, character_setting, world_setting, plot_idea, created_at, updated_at) 
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		ON CONFLICT(id) DO UPDATE SET
 		title=excluded.title,
 		genre=excluded.genre,
 		sub_genres=excluded.sub_genres,
+		pov=excluded.pov,
+		pronouns=excluded.pronouns,
 		character_setting=excluded.character_setting,
 		world_setting=excluded.world_setting,
 		plot_idea=excluded.plot_idea,
 		updated_at=excluded.updated_at`,
-		p.ID, p.Title, p.Genre, string(sgJSON), p.CharacterSetting, p.WorldSetting, p.PlotIdea, p.CreatedAt, p.UpdatedAt)
+		p.ID, p.Title, p.Genre, string(sgJSON), p.Pov, p.Pronouns, p.CharacterSetting, p.WorldSetting, p.PlotIdea, p.CreatedAt, p.UpdatedAt)
 
 	if err != nil {
 		tx.Rollback()
@@ -102,8 +106,8 @@ func (pm *ProjectManager) LoadProject(id string) (*core.NovelProject, error) {
 	p := &core.NovelProject{}
 
 	var sgStr string
-	err := db.QueryRow("SELECT id, title, genre, sub_genres, character_setting, world_setting, plot_idea, created_at, updated_at FROM projects WHERE id = ?", id).
-		Scan(&p.ID, &p.Title, &p.Genre, &sgStr, &p.CharacterSetting, &p.WorldSetting, &p.PlotIdea, &p.CreatedAt, &p.UpdatedAt)
+	err := db.QueryRow("SELECT id, title, genre, sub_genres, pov, pronouns, character_setting, world_setting, plot_idea, created_at, updated_at FROM projects WHERE id = ?", id).
+		Scan(&p.ID, &p.Title, &p.Genre, &sgStr, &p.Pov, &p.Pronouns, &p.CharacterSetting, &p.WorldSetting, &p.PlotIdea, &p.CreatedAt, &p.UpdatedAt)
 	
 	if err != nil {
 		return nil, err

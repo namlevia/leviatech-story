@@ -29,6 +29,8 @@ type GenerationConfig struct {
 	ChapterTargetWords   int     `json:"chapter_target_words"`
 	WritingStyle         string  `json:"writing_style"`
 	WritingTone          string  `json:"writing_tone"`
+	Pov                  string  `json:"pov"`
+	Pronouns             string  `json:"pronouns"`
 	CharacterDevelopment string  `json:"character_development"`
 	PlotComplexity       string  `json:"plot_complexity"`
 }
@@ -120,6 +122,8 @@ func (c *ConfigManager) initDefault() {
 		ChapterTargetWords:   4000,
 		WritingStyle:         "Trôi chảy tự nhiên, tình tiết chặt chẽ, miêu tả nhân vật tinh tế",
 		WritingTone:          "Trung lập",
+		Pov:                  "Ngôi thứ 3 hạn chế",
+		Pronouns:             "Anime / Light Novel",
 		CharacterDevelopment: "Chi tiết",
 		PlotComplexity:       "Trung bình",
 	}

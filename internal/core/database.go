@@ -91,6 +91,8 @@ func initDB(db *sql.DB) {
 		title TEXT NOT NULL,
 		genre TEXT NOT NULL DEFAULT '',
 		sub_genres TEXT NOT NULL DEFAULT '[]',
+		pov TEXT NOT NULL DEFAULT '',
+		pronouns TEXT NOT NULL DEFAULT '',
 		character_setting TEXT NOT NULL DEFAULT '',
 		world_setting TEXT NOT NULL DEFAULT '',
 		plot_idea TEXT NOT NULL DEFAULT '',
@@ -130,4 +132,6 @@ func initDB(db *sql.DB) {
 
 	// Try to alter table, ignore error if column already exists
 	_, _ = db.Exec("ALTER TABLE projects ADD COLUMN sub_genres TEXT NOT NULL DEFAULT '[]'")
+	_, _ = db.Exec("ALTER TABLE projects ADD COLUMN pov TEXT NOT NULL DEFAULT ''")
+	_, _ = db.Exec("ALTER TABLE projects ADD COLUMN pronouns TEXT NOT NULL DEFAULT ''")
 }

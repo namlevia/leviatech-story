@@ -29,12 +29,16 @@ export default function CreatePage() {
   const [subGenres, setSubGenres] = useState<any[]>([]);
   const [styles, setStyles] = useState<any[]>([]);
   const [tones, setTones] = useState<any[]>([]);
+  const [povs, setPovs] = useState<any[]>([]);
+  const [pronounsList, setPronounsList] = useState<any[]>([]);
 
   // Form State
   const [genre, setGenre] = useState<string>("");
   const [selectedSubGenres, setSelectedSubGenres] = useState<string[]>([]);
   const [style, setStyle] = useState<string>("");
   const [tone, setTone] = useState<string>("");
+  const [pov, setPov] = useState<string>("");
+  const [pronouns, setPronouns] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [characterSetting, setCharacterSetting] = useState<string>("");
   const [worldSetting, setWorldSetting] = useState<string>("");
@@ -49,7 +53,7 @@ export default function CreatePage() {
   const [numSubChars, setNumSubChars] = useState<number>(3);
   
   // Modal State
-  const [modalType, setModalType] = useState<"genre" | "sub_genre" | "style" | "tone" | null>(null);
+  const [modalType, setModalType] = useState<"genre" | "sub_genre" | "style" | "tone" | "pov" | "pronouns" | null>(null);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [importProjects, setImportProjects] = useState<any[]>([]);
   const [loadingImport, setLoadingImport] = useState(false);
@@ -116,8 +120,10 @@ export default function CreatePage() {
       api.getDataItems('sub_genres').catch(() => []),
       api.getDataItems('styles').catch(() => []),
       api.getDataItems('tones').catch(() => []),
+      api.getDataItems('pov').catch(() => []),
+      api.getDataItems('pronouns').catch(() => []),
       api.getGenerationConfig().catch(() => null)
-    ]).then(([g, sg, st, tn, genCfg]) => {
+    ]).then(([g, sg, st, tn, povData, proData, genCfg]) => {
       setGenres(g);
       if (g.length > 0) setGenre(g[0].name);
       setSubGenres(sg);
@@ -135,6 +141,12 @@ export default function CreatePage() {
       } else if (tn.length > 0) {
         setTone(tn[0].name);
       }
+
+      setPovs(povData);
+      if (povData.length > 0) setPov(povData[0].name);
+      
+      setPronounsList(proData);
+      if (proData.length > 0) setPronouns(proData[0].name);
     });
   }, []);
 
@@ -164,6 +176,8 @@ export default function CreatePage() {
       setTitle(p.title || "");
       if (p.genre) setGenre(p.genre);
       if (p.sub_genres && p.sub_genres.length > 0) setSelectedSubGenres(p.sub_genres);
+      if (p.pov) setPov(p.pov);
+      if (p.pronouns) setPronouns(p.pronouns);
       if (p.character_setting) setCharacterSetting(p.character_setting);
       if (p.world_setting) setWorldSetting(p.world_setting);
       if (p.plot_idea) setPlotIdea(p.plot_idea);
@@ -197,6 +211,12 @@ export default function CreatePage() {
       setSelectedSubGenres(prev => 
         prev.includes(name) ? prev.filter(x => x !== name) : [...prev, name]
       );
+    } else if (modalType === "pov") {
+      setPov(name);
+      setModalType(null);
+    } else if (modalType === "pronouns") {
+      setPronouns(name);
+      setModalType(null);
     }
   };
 
@@ -282,7 +302,7 @@ export default function CreatePage() {
     setGeneratingOutline(true);
     try {
       const res = await api.generateOutline({
-        title, genre, sub_genres: selectedSubGenres,
+        title, genre, sub_genres: selectedSubGenres, pov, pronouns,
         total_chapters: totalChapters,
         character_setting: characterSetting,
         world_setting: worldSetting,
@@ -320,7 +340,7 @@ export default function CreatePage() {
     if (!pid) {
       try {
         const pRes = await api.createProject({
-          title, genre, sub_genres: selectedSubGenres,
+          title, genre, sub_genres: selectedSubGenres, pov, pronouns,
           character_setting: characterSetting,
           world_setting: worldSetting, plot_idea: plotIdea
         });
@@ -361,6 +381,8 @@ export default function CreatePage() {
               plot_idea: plotIdea,
               genre: genre,
               sub_genres: selectedSubGenres,
+              pov: pov,
+              pronouns: pronouns,
               previous_content: prevContent,
               use_reflection: useReflection,
               custom_prompt: customPrompt
@@ -386,7 +408,7 @@ export default function CreatePage() {
         // Auto-save to backend
         try {
           await api.updateProject(pid as string, {
-            title, genre, sub_genres: selectedSubGenres,
+            title, genre, sub_genres: selectedSubGenres, pov, pronouns,
             character_setting: characterSetting,
             world_setting: worldSetting,
             plot_idea: plotIdea,
@@ -480,6 +502,24 @@ export default function CreatePage() {
         onSelect={handleSelectModalItem} 
         multiSelect={false} 
       />
+      <SelectionModal 
+        isOpen={modalType === "pov"} 
+        onClose={() => setModalType(null)} 
+        title="Chọn Góc Nhìn (POV)" 
+        items={povs} 
+        selectedItems={pov} 
+        onSelect={handleSelectModalItem} 
+        multiSelect={false} 
+      />
+      <SelectionModal 
+        isOpen={modalType === "pronouns"} 
+        onClose={() => setModalType(null)} 
+        title="Chọn Cách Xưng Hô" 
+        items={pronounsList} 
+        selectedItems={pronouns} 
+        onSelect={handleSelectModalItem} 
+        multiSelect={false} 
+      />
 
       {/* Import Modal */}
       {isImportModalOpen && (
@@ -524,7 +564,7 @@ export default function CreatePage() {
               <GlassCard className="space-y-8">
                 
                 {/* Full Width Info Selection */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                   
                   {/* Genre Box */}
                   <div 
@@ -577,13 +617,37 @@ export default function CreatePage() {
                   {/* Tone Box */}
                   <div 
                     onClick={() => setModalType('tone')}
-                    className="px-4 py-2.5 bg-black/40 border border-border-soft rounded-xl cursor-pointer hover:border-brand-secondary/50 hover:bg-bg-panel transition-all group"
+                    className="px-4 py-3 bg-bg-input border border-border-soft rounded-xl cursor-pointer hover:border-brand-secondary/50 hover:bg-bg-panel transition-all group"
                   >
                     <label className="text-xs text-text-muted mb-1 flex justify-between items-center cursor-pointer">
                       <span>Giọng điệu {isStyleSuggested && <span className="text-secondary italic">(Gợi ý)</span>}</span>
                     </label>
                     <div className="text-base font-semibold text-secondary flex items-center justify-between">
                       <span className="truncate pr-2">{tone || "Chưa chọn"}</span>
+                      <ChevronDown size={16} className="text-zinc-600 group-hover:text-secondary transition-colors shrink-0" />
+                    </div>
+                  </div>
+
+                  {/* POV Box */}
+                  <div 
+                    onClick={() => setModalType('pov')}
+                    className="px-4 py-3 bg-bg-input border border-border-soft rounded-xl cursor-pointer hover:border-primary/50 hover:bg-bg-panel transition-all group"
+                  >
+                    <label className="text-xs text-text-muted mb-1 block cursor-pointer">Góc nhìn (POV)</label>
+                    <div className="text-base font-semibold text-primary flex items-center justify-between">
+                      <span className="truncate pr-2">{pov || "Chưa chọn"}</span>
+                      <ChevronDown size={16} className="text-zinc-600 group-hover:text-primary transition-colors shrink-0" />
+                    </div>
+                  </div>
+
+                  {/* Pronouns Box */}
+                  <div 
+                    onClick={() => setModalType('pronouns')}
+                    className="px-4 py-3 bg-bg-input border border-border-soft rounded-xl cursor-pointer hover:border-secondary/50 hover:bg-bg-panel transition-all group"
+                  >
+                    <label className="text-xs text-text-muted mb-1 block cursor-pointer">Xưng hô</label>
+                    <div className="text-base font-semibold text-secondary flex items-center justify-between">
+                      <span className="truncate pr-2">{pronouns || "Chưa chọn"}</span>
                       <ChevronDown size={16} className="text-zinc-600 group-hover:text-secondary transition-colors shrink-0" />
                     </div>
                   </div>

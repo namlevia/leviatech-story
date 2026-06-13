@@ -61,6 +61,8 @@ func CreateProject(c *fiber.Ctx) error {
 		Title            string   `json:"title"`
 		Genre            string   `json:"genre"`
 		SubGenres        []string `json:"sub_genres"`
+		Pov              string   `json:"pov"`
+		Pronouns         string   `json:"pronouns"`
 		CharacterSetting string   `json:"character_setting"`
 		WorldSetting     string   `json:"world_setting"`
 		PlotIdea         string   `json:"plot_idea"`
@@ -72,7 +74,7 @@ func CreateProject(c *fiber.Ctx) error {
 	}
 
 	pm := services.NewProjectManager()
-	project, err := pm.CreateProject(req.Title, req.Genre, req.SubGenres, req.CharacterSetting, req.WorldSetting, req.PlotIdea)
+	project, err := pm.CreateProject(req.Title, req.Genre, req.SubGenres, req.Pov, req.Pronouns, req.CharacterSetting, req.WorldSetting, req.PlotIdea)
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}

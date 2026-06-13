@@ -168,6 +168,10 @@ func TestConnection(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"success": false, "message": "Invalid request"})
 	}
 
+	if req.Type != "ollama" && req.APIKey == "" {
+		return c.Status(400).JSON(fiber.Map{"success": false, "message": "Vui lòng nhập API Key để test kết nối"})
+	}
+
 	oCfg := openai.DefaultConfig(req.APIKey)
 	if req.BaseURL != "" {
 		oCfg.BaseURL = req.BaseURL
@@ -202,10 +206,14 @@ func FetchModels(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"success": false, "message": "Invalid request"})
 	}
 
+	if req.Type != "ollama" && req.APIKey == "" {
+		return c.Status(400).JSON(fiber.Map{"success": false, "message": "Vui lòng nhập API Key để lấy danh sách"})
+	}
+
 	if req.Type == "anthropic" {
 		return c.JSON(fiber.Map{
 			"success": true,
-			"data":    []string{"claude-3-5-sonnet-20240620", "claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"},
+			"data":    []string{"claude-5-fable", "claude-4.8-opus", "claude-4.6-sonnet", "claude-4.5-haiku"},
 		})
 	}
 
@@ -222,7 +230,13 @@ func FetchModels(c *fiber.Ctx) error {
 	if err != nil {
 		// Fallback for known providers if fetching fails
 		if req.Type == "gemini" {
-			return c.JSON(fiber.Map{"success": true, "data": []string{"gemini-1.5-pro", "gemini-1.5-flash", "gemini-1.0-pro"}})
+			return c.JSON(fiber.Map{"success": true, "data": []string{"gemini-3-pro", "gemini-3-flash", "gemini-2.5-pro"}})
+		}
+		if req.Type == "deepseek" {
+			return c.JSON(fiber.Map{"success": true, "data": []string{"deepseek-v4-pro", "deepseek-v4-flash"}})
+		}
+		if req.Type == "openai" {
+			return c.JSON(fiber.Map{"success": true, "data": []string{"gpt-5.4", "gpt-5-turbo", "gpt-4o"}})
 		}
 		return c.Status(400).JSON(fiber.Map{"success": false, "message": err.Error()})
 	}

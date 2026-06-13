@@ -90,6 +90,8 @@ export default function ContinuePage() {
             plot_idea: project.plot_idea || "",
             genre: project.genre || "",
             sub_genres: project.sub_genres || [],
+            pov: project.pov || "",
+            pronouns: project.pronouns || "",
             previous_content: prevContent,
             use_reflection: useReflection,
             custom_prompt: ""

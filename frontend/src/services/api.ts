@@ -5,6 +5,8 @@ export interface ProjectCreateReq {
   title: string;
   genre: string;
   sub_genres: string[];
+  pov: string;
+  pronouns: string;
   character_setting?: string;
   world_setting?: string;
   plot_idea?: string;
@@ -15,6 +17,8 @@ export interface Project {
   title: string;
   genre: string;
   sub_genres: string[];
+  pov: string;
+  pronouns: string;
   character_setting: string;
   world_setting: string;
   plot_idea: string;
@@ -38,6 +42,8 @@ export interface OutlineReq {
   title: string;
   genre: string;
   sub_genres: string[];
+  pov: string;
+  pronouns: string;
   total_chapters: number;
   character_setting: string;
   world_setting: string;
@@ -393,33 +399,33 @@ export const api = {
   },
 
   // Data Management (Genres, Sub-genres, Styles)
-  async getDataItems(type: 'genres' | 'sub_genres' | 'styles' | 'tones') {
+  async getDataItems(type: 'genres' | 'sub_genres' | 'styles' | 'tones' | 'pov' | 'pronouns') {
     const res = await fetch(`${API_BASE_URL}/data/${type}`);
     if (!res.ok) throw new Error(`Failed to fetch ${type}`);
     return res.json();
   },
 
-  async addDataItem(type: 'genres' | 'sub_genres' | 'styles' | 'tones', data: { name: string, description: string }) {
+  async addDataItem(type: 'genres' | 'sub_genres' | 'styles' | 'tones' | 'pov' | 'pronouns', data: any) {
     const res = await fetch(`${API_BASE_URL}/data/${type}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     });
     if (!res.ok) throw new Error(`Failed to add ${type}`);
     return res.json();
   },
 
-  async updateDataItem(type: 'genres' | 'sub_genres' | 'styles' | 'tones', oldName: string, data: { name: string, description: string }) {
-    const res = await fetch(`${API_BASE_URL}/data/${type}/${encodeURIComponent(oldName)}`, {
+  async updateDataItem(type: 'genres' | 'sub_genres' | 'styles' | 'tones' | 'pov' | 'pronouns', name: string, data: any) {
+    const res = await fetch(`${API_BASE_URL}/data/${type}/${encodeURIComponent(name)}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     });
     if (!res.ok) throw new Error(`Failed to update ${type}`);
     return res.json();
   },
 
-  async deleteDataItem(type: 'genres' | 'sub_genres' | 'styles' | 'tones', name: string) {
+  async deleteDataItem(type: 'genres' | 'sub_genres' | 'styles' | 'tones' | 'pov' | 'pronouns', name: string) {
     const res = await fetch(`${API_BASE_URL}/data/${type}/${encodeURIComponent(name)}`, {
       method: 'DELETE',
     });

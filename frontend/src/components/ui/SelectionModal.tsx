@@ -55,7 +55,7 @@ const SelectionModal = ({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="bg-bg-card border border-border-soft rounded-2xl w-full max-w-5xl h-[80vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200">
+      <div className="bg-bg-card border border-border-soft rounded-2xl w-full max-w-5xl max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200">
         
         {/* Header */}
         <div className="p-5 border-b border-border-soft flex justify-between items-center bg-bg-panel rounded-t-2xl">
@@ -67,8 +67,9 @@ const SelectionModal = ({
           </button>
         </div>
         
-        {/* Alphabet Filter Bar */}
-        <div className="p-3 border-b border-border-soft bg-bg-panel flex overflow-x-auto gap-2 custom-scrollbar items-center">
+        {/* Alphabet Filter Bar - Only show if many items */}
+        {items.length > 10 && (
+          <div className="p-3 border-b border-border-soft bg-bg-panel flex overflow-x-auto gap-2 custom-scrollbar items-center">
             <button 
               onClick={(e) => { 
                 setLetterFilter(""); setSearch(""); 
@@ -90,7 +91,8 @@ const SelectionModal = ({
                 {l}
               </button>
             ))}
-        </div>
+          </div>
+        )}
 
         {/* Content Area */}
         <div className="flex flex-1 overflow-hidden bg-zinc-900/50">

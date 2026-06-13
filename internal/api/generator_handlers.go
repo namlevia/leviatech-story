@@ -36,6 +36,8 @@ func GenerateOutlineEndpoint(c *fiber.Ctx) error {
 		Title               string   `json:"title"`
 		Genre               string   `json:"genre"`
 		SubGenres           []string `json:"sub_genres"`
+		Pov                 string   `json:"pov"`
+		Pronouns            string   `json:"pronouns"`
 		TotalChapters       int      `json:"total_chapters"`
 		CharacterSetting    string   `json:"character_setting"`
 		WorldSetting        string   `json:"world_setting"`
@@ -49,7 +51,7 @@ func GenerateOutlineEndpoint(c *fiber.Ctx) error {
 
 	gen := services.GetGenerator()
 	outline, msg := gen.GenerateOutline(
-		req.Title, req.Genre, req.SubGenres, req.TotalChapters,
+		req.Title, req.Genre, req.SubGenres, req.Pov, req.Pronouns, req.TotalChapters,
 		req.CharacterSetting, req.WorldSetting, req.PlotIdea, req.CustomOutlinePrompt,
 	)
 
@@ -162,6 +164,8 @@ func GenerateChapterStreamEndpoint(c *fiber.Ctx) error {
 		PlotIdea         string   `json:"plot_idea"`
 		Genre            string   `json:"genre"`
 		SubGenres        []string `json:"sub_genres"`
+		Pov              string   `json:"pov"`
+		Pronouns         string   `json:"pronouns"`
 		PreviousContent  string   `json:"previous_content"`
 		ContextSummary   string   `json:"context_summary"`
 		CustomPrompt     string   `json:"custom_prompt"`
@@ -177,7 +181,7 @@ func GenerateChapterStreamEndpoint(c *fiber.Ctx) error {
 
 	go gen.GenerateChapterStream(
 		req.ProjectID, req.ChapterNum, req.ChapterTitle, req.ChapterDesc, req.NovelTitle,
-		req.CharacterSetting, req.WorldSetting, req.PlotIdea, req.Genre, req.SubGenres,
+		req.CharacterSetting, req.WorldSetting, req.PlotIdea, req.Genre, req.SubGenres, req.Pov, req.Pronouns,
 		req.PreviousContent, req.ContextSummary, req.CustomPrompt, req.UseReflection,
 		streamChan,
 	)
@@ -248,6 +252,8 @@ func ContinueWritingStreamEndpoint(c *fiber.Ctx) error {
 		CharacterSetting string `json:"character_setting"`
 		WorldSetting     string `json:"world_setting"`
 		PlotIdea         string `json:"plot_idea"`
+		Pov              string `json:"pov"`
+		Pronouns         string `json:"pronouns"`
 		ExistingContent  string `json:"existing_content"`
 		CustomPrompt     string `json:"custom_prompt"`
 		UseReflection    bool   `json:"use_reflection"`
@@ -262,7 +268,7 @@ func ContinueWritingStreamEndpoint(c *fiber.Ctx) error {
 	gen := services.GetGenerator()
 
 	go gen.ContinueWritingStream(
-		req.NovelTitle, req.CharacterSetting, req.WorldSetting, req.PlotIdea,
+		req.NovelTitle, req.CharacterSetting, req.WorldSetting, req.PlotIdea, req.Pov, req.Pronouns,
 		req.ExistingContent, req.CustomPrompt, targetWords, req.UseReflection, streamChan,
 	)
 
