@@ -90,6 +90,27 @@ func (dm *DataManager) Save(items []DataItem) error {
 	return nil
 }
 
+func FormatDataWithDesc(fileName, name string) string {
+	if name == "" {
+		return ""
+	}
+	path := filepath.Join("data", fileName)
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return name
+	}
+	var items []DataItem
+	if err := json.Unmarshal(data, &items); err != nil {
+		return name
+	}
+	for _, item := range items {
+		if item.Name == name && item.Description != "" {
+			return fmt.Sprintf("%s (%s)", item.Name, item.Description)
+		}
+	}
+	return name
+}
+
 func (dm *DataManager) Add(item DataItem) error {
 	items, err := dm.Load()
 	if err != nil {
