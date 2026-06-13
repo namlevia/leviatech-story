@@ -28,24 +28,50 @@
 
 Dự án đã được tối ưu hóa Docker cực nhẹ (multi-stage build), giúp gộp cả Backend và Frontend vào một môi trường chạy duy nhất, đơn giản hoá tuyệt đối quá trình triển khai.
 
-### 🐳 Chạy qua Docker Compose (Khuyên dùng)
+### 🐳 Chạy qua Docker (Khuyên dùng)
 
 **Yêu cầu**: Đã cài đặt Docker và Docker Compose.
 
+#### Cách 1: Tải Image có sẵn từ Github (Nhanh nhất, gọn nhẹ)
+Cách này không cần tải mã nguồn, chỉ cần copy nội dung file dưới đây là chạy được ngay.
+1. Tạo một thư mục trống bất kỳ (ví dụ: `leviatech-story`).
+2. Tạo file `docker-compose.yml` trong thư mục đó với nội dung sau:
+   ```yaml
+   version: '3.8'
+   services:
+     leviatech-story:
+       image: ghcr.io/namlevia/leviatech-story:latest
+       container_name: leviatech-story
+       restart: unless-stopped
+       ports:
+         - "1997:1997"
+       environment:
+         - TZ=Asia/Ho_Chi_Minh
+       volumes:
+         - ./data:/app/data
+         - ./logs:/app/logs
+         - ./exports:/app/exports
+         - ./cache:/app/cache
+         - ./backups:/app/backups
+   ```
+3. Mở Terminal tại thư mục đó và chạy lệnh:
+   ```bash
+   docker-compose up -d
+   ```
+4. Mở trình duyệt và truy cập: **`http://localhost:1997`**
+
+#### Cách 2: Tự Build Image từ mã nguồn (Dành cho Developer)
 1. **Clone mã nguồn**:
    ```bash
    git clone https://github.com/namlevia/leviatech-story.git
    cd leviatech-story
    ```
-
-2. **Khởi động ứng dụng**:
-   Chỉ cần chạy lệnh sau, Docker sẽ tự động tải các gói cài đặt, build Go, build Next.js và chạy ngầm toàn bộ dịch vụ.
+2. **Tiến hành Build và chạy**:
+   Docker sẽ tự động tải các gói cài đặt, biên dịch Go và Next.js rồi chạy ngầm.
    ```bash
    docker-compose up -d --build
    ```
-
-3. **Mở trình duyệt**:
-   Giao diện ứng dụng hoàn chỉnh sẽ hoạt động tại: **`http://localhost:1997`**
+3. Mở trình duyệt và truy cập: **`http://localhost:1997`**
 
 *Lưu ý: Toàn bộ dữ liệu của bạn (`data`, `logs`, `exports`) sẽ được lưu lại an toàn bên ngoài thư mục máy nhờ cơ chế Volumes của Docker Compose, dù cập nhật hay xóa container thì truyện của bạn vẫn an toàn 100%.*
 
