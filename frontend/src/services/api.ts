@@ -315,8 +315,20 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error('Failed to fetch models');
-    return res.json();
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || json.success === false) throw new Error(json.message || 'Failed to fetch models');
+    return json;
+  },
+
+  async testConnection(data: { type: string, base_url: string, api_key: string, model: string }) {
+    const res = await fetch(`${API_BASE_URL}/config/backends/test-connection`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || json.success === false) throw new Error(json.message || 'Failed to test connection');
+    return json;
   },
 
   async deleteBackend(name: string) {

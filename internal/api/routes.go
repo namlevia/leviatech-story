@@ -39,6 +39,7 @@ func SetupRoutes(app *fiber.App) {
 	api.Post("/config/backends/:name/toggle", ToggleBackend)
 	api.Post("/config/backends/:name/default", SetDefaultBackend)
 	api.Get("/config/backends/:name/test", TestBackend)
+	api.Post("/config/backends/test-connection", TestConnection)
 	api.Post("/config/backends/fetch-models", FetchModels)
 	api.Get("/logs", GetLogs)
 

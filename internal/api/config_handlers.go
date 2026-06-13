@@ -157,6 +157,41 @@ func TestBackend(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"success": true, "message": "Connection successful"})
 }
 
+func TestConnection(c *fiber.Ctx) error {
+	var req struct {
+		Type    string `json:"type"`
+		BaseURL string `json:"base_url"`
+		APIKey  string `json:"api_key"`
+		Model   string `json:"model"`
+	}
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(400).JSON(fiber.Map{"success": false, "message": "Invalid request"})
+	}
+
+	oCfg := openai.DefaultConfig(req.APIKey)
+	if req.BaseURL != "" {
+		oCfg.BaseURL = req.BaseURL
+	}
+	client := openai.NewClientWithConfig(oCfg)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	_, err := client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
+		Model: req.Model,
+		Messages: []openai.ChatCompletionMessage{
+			{Role: "user", Content: "hi"},
+		},
+		MaxTokens: 5,
+	})
+
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"success": false, "message": err.Error()})
+	}
+
+	return c.JSON(fiber.Map{"success": true, "message": "Kết nối và test Model thành công!"})
+}
+
 func FetchModels(c *fiber.Ctx) error {
 	var req struct {
 		Type    string `json:"type"`

@@ -265,6 +265,8 @@ function BackendConfig({ backends, refresh }: { backends: any[], refresh: (silen
   const [form, setForm] = useState({ name: '', type: 'ollama', base_url: '', api_key: '', model: '', enabled: true, timeout: 120 });
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState<string | null>(null);
+  const [testingConnection, setTestingConnection] = useState(false);
+  const [testSuccess, setTestSuccess] = useState(false);
   const [showApiKey, setShowApiKey] = useState(false);
   const [fetchingModels, setFetchingModels] = useState(false);
   const [fetchedModels, setFetchedModels] = useState<string[]>([]);
@@ -273,12 +275,14 @@ function BackendConfig({ backends, refresh }: { backends: any[], refresh: (silen
   const openAdd = () => {
     setForm({ name: '', type: 'ollama', base_url: '', api_key: '', model: '', enabled: true, timeout: 120 });
     setEditingBackend(null);
+    setTestSuccess(false);
     setModalOpen(true);
   };
 
   const openEdit = (b: any) => {
     setForm({ name: b.name, type: b.type, base_url: b.base_url, api_key: b.api_key, model: b.model, enabled: b.enabled, timeout: b.timeout || 120 });
     setEditingBackend(b);
+    setTestSuccess(true);
     setModalOpen(true);
   };
 
@@ -315,6 +319,20 @@ function BackendConfig({ backends, refresh }: { backends: any[], refresh: (silen
       toast(`Lỗi lấy models: ${err.message}`, "error");
     } finally {
       setFetchingModels(false);
+    }
+  };
+
+  const handleTestConnection = async () => {
+    setTestingConnection(true);
+    setTestSuccess(false);
+    try {
+      await api.testConnection({ type: form.type, base_url: form.base_url, api_key: form.api_key, model: form.model });
+      setTestSuccess(true);
+      toast("Kết nối và test Model thành công! Có thể lưu.", "success");
+    } catch (err: any) {
+      toast(`Lỗi test: ${err.message}`, "error");
+    } finally {
+      setTestingConnection(false);
     }
   };
 
@@ -445,12 +463,12 @@ function BackendConfig({ backends, refresh }: { backends: any[], refresh: (silen
               </div>
               <div>
                 <label className="text-sm text-text-muted mb-1 block">Base URL</label>
-                <input value={form.base_url} onChange={e => setForm({...form, base_url: e.target.value})} className="input w-full" placeholder={urlPlaceholder} />
+                <input value={form.base_url} onChange={e => { setForm({...form, base_url: e.target.value}); setTestSuccess(false); }} className="input w-full" placeholder={urlPlaceholder} />
               </div>
               <div>
                 <label className="text-sm text-text-muted mb-1 block">API Key {form.type === 'ollama' ? '(Tùy chọn)' : '(Bắt buộc)'}</label>
                 <div className="relative">
-                  <input type={showApiKey ? "text" : "password"} value={form.api_key} onChange={e => setForm({...form, api_key: e.target.value})} className="input w-full pr-10" placeholder="sk-..." />
+                  <input type={showApiKey ? "text" : "password"} value={form.api_key} onChange={e => { setForm({...form, api_key: e.target.value}); setTestSuccess(false); }} className="input w-full pr-10" placeholder="sk-..." />
                   <button type="button" onClick={() => setShowApiKey(!showApiKey)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main">
                     {showApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
@@ -465,7 +483,7 @@ function BackendConfig({ backends, refresh }: { backends: any[], refresh: (silen
                       Lấy danh sách
                     </Button>
                   </div>
-                  <input list="model-suggestions" value={form.model} onChange={e => setForm({...form, model: e.target.value})} className="input w-full" placeholder={modelPlaceholder} />
+                  <input list="model-suggestions" value={form.model} onChange={e => { setForm({...form, model: e.target.value}); setTestSuccess(false); }} className="input w-full" placeholder={modelPlaceholder} />
                   <datalist id="model-suggestions">
                     {fetchedModels.length > 0 ? fetchedModels.map((m, idx) => (
                       <option key={idx} value={m} />
@@ -488,7 +506,12 @@ function BackendConfig({ backends, refresh }: { backends: any[], refresh: (silen
             </div>
             <div className="flex gap-3 justify-end mt-6">
               <Button variant="secondary" onClick={() => setModalOpen(false)}>Hủy</Button>
-              <Button variant="glow" onClick={handleSave} disabled={saving || !form.name || !form.model || (form.type !== 'ollama' && !form.api_key)}>{saving ? "Đang lưu..." : "Lưu Backend"}</Button>
+              <Button variant="secondary" onClick={handleTestConnection} disabled={testingConnection || !form.model || !form.base_url}>
+                {testingConnection ? <Loader2 size={16} className="animate-spin" /> : "Test Model"}
+              </Button>
+              <Button variant="glow" onClick={handleSave} disabled={saving || !form.name || (!form.api_key && form.type !== 'ollama') || !form.model || !testSuccess}>
+                {saving ? <Loader2 size={16} className="animate-spin" /> : "Lưu Backend"}
+              </Button>
             </div>
           </div>
         </div>
