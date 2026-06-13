@@ -266,6 +266,8 @@ function BackendConfig({ backends, refresh }: { backends: any[], refresh: (silen
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState<string | null>(null);
   const [showApiKey, setShowApiKey] = useState(false);
+  const [fetchingModels, setFetchingModels] = useState(false);
+  const [fetchedModels, setFetchedModels] = useState<string[]>([]);
   const { toast } = useToast();
 
   const openAdd = () => {
@@ -295,6 +297,24 @@ function BackendConfig({ backends, refresh }: { backends: any[], refresh: (silen
       toast("Lỗi khi lưu Backend!", "error");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleFetchModels = async () => {
+    setFetchingModels(true);
+    setFetchedModels([]);
+    try {
+      const res = await api.fetchModels({ type: form.type, base_url: form.base_url, api_key: form.api_key });
+      if (res.data && res.data.length > 0) {
+        setFetchedModels(res.data);
+        toast(`Đã lấy danh sách ${res.data.length} models thành công!`, "success");
+      } else {
+        toast("Không tìm thấy model nào.", "error");
+      }
+    } catch (err: any) {
+      toast(`Lỗi lấy models: ${err.message}`, "error");
+    } finally {
+      setFetchingModels(false);
     }
   };
 
@@ -438,8 +458,27 @@ function BackendConfig({ backends, refresh }: { backends: any[], refresh: (silen
               </div>
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="text-sm text-text-muted mb-1 block">Model Name</label>
-                  <input value={form.model} onChange={e => setForm({...form, model: e.target.value})} className="input w-full" placeholder={modelPlaceholder} />
+                  <div className="flex justify-between items-end mb-1">
+                    <label className="text-sm text-text-muted block">Model Name</label>
+                    <Button variant="ghost" size="sm" onClick={handleFetchModels} disabled={fetchingModels} className="h-6 text-xs px-2 py-0 text-brand-primary hover:text-brand-primary/80">
+                      {fetchingModels ? <Loader2 size={12} className="animate-spin mr-1" /> : <Search size={12} className="mr-1" />}
+                      Lấy danh sách
+                    </Button>
+                  </div>
+                  <input list="model-suggestions" value={form.model} onChange={e => setForm({...form, model: e.target.value})} className="input w-full" placeholder={modelPlaceholder} />
+                  <datalist id="model-suggestions">
+                    {fetchedModels.length > 0 ? fetchedModels.map((m, idx) => (
+                      <option key={idx} value={m} />
+                    )) : (
+                      <>
+                        {form.type === 'openai' && <><option value="gpt-4o" /><option value="gpt-4-turbo" /><option value="gpt-3.5-turbo" /></>}
+                        {form.type === 'gemini' && <><option value="gemini-1.5-pro" /><option value="gemini-1.5-flash" /><option value="gemini-1.0-pro" /></>}
+                        {form.type === 'anthropic' && <><option value="claude-3-5-sonnet-20240620" /><option value="claude-3-opus-20240229" /><option value="claude-3-haiku-20240307" /></>}
+                        {form.type === 'groq' && <><option value="llama3-70b-8192" /><option value="llama3-8b-8192" /><option value="mixtral-8x7b-32768" /></>}
+                        {form.type === 'ollama' && <><option value="llama3" /><option value="qwen2" /><option value="phi3" /></>}
+                      </>
+                    )}
+                  </datalist>
                 </div>
                 <div className="w-1/3">
                   <label className="text-sm text-text-muted mb-1 block">Timeout (giây)</label>

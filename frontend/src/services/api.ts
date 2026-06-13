@@ -309,6 +309,16 @@ export const api = {
     return res.json();
   },
 
+  async fetchModels(data: { type: string, base_url: string, api_key: string }) {
+    const res = await fetch(`${API_BASE_URL}/config/backends/fetch-models`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Failed to fetch models');
+    return res.json();
+  },
+
   async deleteBackend(name: string) {
     const res = await fetch(`${API_BASE_URL}/config/backends/${encodeURIComponent(name)}`, {
       method: 'DELETE',

@@ -157,6 +157,52 @@ func TestBackend(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"success": true, "message": "Connection successful"})
 }
 
+func FetchModels(c *fiber.Ctx) error {
+	var req struct {
+		Type    string `json:"type"`
+		BaseURL string `json:"base_url"`
+		APIKey  string `json:"api_key"`
+	}
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(400).JSON(fiber.Map{"success": false, "message": "Invalid request"})
+	}
+
+	if req.Type == "anthropic" {
+		return c.JSON(fiber.Map{
+			"success": true,
+			"data":    []string{"claude-3-5-sonnet-20240620", "claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"},
+		})
+	}
+
+	oCfg := openai.DefaultConfig(req.APIKey)
+	if req.BaseURL != "" {
+		oCfg.BaseURL = req.BaseURL
+	}
+	client := openai.NewClientWithConfig(oCfg)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	models, err := client.ListModels(ctx)
+	if err != nil {
+		// Fallback for known providers if fetching fails
+		if req.Type == "gemini" {
+			return c.JSON(fiber.Map{"success": true, "data": []string{"gemini-1.5-pro", "gemini-1.5-flash", "gemini-1.0-pro"}})
+		}
+		return c.Status(400).JSON(fiber.Map{"success": false, "message": err.Error()})
+	}
+
+	var modelList []string
+	for _, m := range models.Models {
+		modelList = append(modelList, m.ID)
+	}
+
+	return c.JSON(fiber.Map{
+		"success": true,
+		"data":    modelList,
+	})
+}
+
 func GetLogs(c *fiber.Ctx) error {
 	logPath := "logs/leviatech_story.log"
 	
