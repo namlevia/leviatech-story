@@ -150,6 +150,30 @@ export default function CreatePage() {
     });
   }, []);
 
+  // Keyboard navigation for steps
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger if user is typing in an input or textarea
+      if (
+        document.activeElement?.tagName === "INPUT" ||
+        document.activeElement?.tagName === "TEXTAREA" ||
+        isImportModalOpen ||
+        modalType
+      ) {
+        return;
+      }
+      
+      if (e.key === "ArrowLeft") {
+        setActiveStep(prev => Math.max(1, prev - 1));
+      } else if (e.key === "ArrowRight") {
+        setActiveStep(prev => Math.min(6, prev + 1));
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isImportModalOpen, modalType]);
+
   const handleCopy = (text: string) => {
     if (!text) return;
     navigator.clipboard.writeText(text);
@@ -463,7 +487,7 @@ export default function CreatePage() {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 p-4 sm:p-6 lg:p-10 overflow-y-auto relative bg-bg-main w-full">
+      <div className="flex-1 px-4 pb-4 pt-0 sm:px-6 sm:pb-6 sm:pt-0 lg:px-10 lg:pt-0 lg:pb-10 overflow-y-auto relative bg-bg-main w-full">
         
       {/* Category Modals */}
       <SelectionModal 
@@ -557,8 +581,7 @@ export default function CreatePage() {
           {/* STEP 1: Basic Info */}
           {activeStep === 1 && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-text-main">Khởi tạo dự án</h2>
+              <div className="mb-3">
                 <p className="text-text-muted">Thiết lập các thông số cơ bản cho tác phẩm của bạn.</p>
               </div>
               <GlassCard className="space-y-8">
@@ -661,7 +684,7 @@ export default function CreatePage() {
                     <input 
                       value={title} 
                       onChange={e => setTitle(e.target.value)} 
-                      className="w-full bg-black/60 border border-border-soft rounded-xl px-4 py-3 text-lg text-text-main outline-none focus:border-brand-primary/50" 
+                      className="w-full bg-bg-input border border-border-soft rounded-xl px-4 py-3 text-lg text-text-main outline-none focus:border-brand-primary/50" 
                       placeholder="Nhập tên truyện của bạn..." 
                     />
                   </div>
@@ -706,8 +729,7 @@ export default function CreatePage() {
           {/* STEP 2: Characters */}
           {activeStep === 2 && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-text-main">Thiết lập nhân vật</h2>
+              <div className="mb-3">
                 <p className="text-text-muted">Xây dựng hệ thống nhân vật chính và phụ.</p>
               </div>
               <GlassCard className="space-y-8">
@@ -769,8 +791,7 @@ export default function CreatePage() {
           {/* STEP 3: World Building */}
           {activeStep === 3 && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-text-main">Kiến tạo thế giới</h2>
+              <div className="mb-3">
                 <p className="text-text-muted">Xây dựng thế giới, luật lệ, và bối cảnh lịch sử.</p>
               </div>
               <GlassCard className="space-y-8">
@@ -818,8 +839,7 @@ export default function CreatePage() {
           {/* STEP 4: Plot Idea */}
           {activeStep === 4 && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-text-main">Phát triển cốt truyện</h2>
+              <div className="mb-3">
                 <p className="text-text-muted">Mô tả tóm tắt nội dung chính và cao trào của truyện.</p>
               </div>
               <GlassCard className="space-y-8">
@@ -867,8 +887,7 @@ export default function CreatePage() {
           {/* STEP 5: Outline */}
           {activeStep === 5 && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-text-main">Cấu trúc khung sườn</h2>
+              <div className="mb-3">
                 <p className="text-text-muted">Lên khung sườn và tinh chỉnh nội dung chi tiết trước khi bắt đầu viết chương.</p>
               </div>
               <GlassCard className="space-y-6">
@@ -895,7 +914,7 @@ export default function CreatePage() {
                   <textarea 
                     value={outline}
                     onChange={e => setOutline(e.target.value)}
-                    className={`w-full h-80 bg-black/40 border border-border-soft rounded-xl p-6 text-text-main font-mono text-sm outline-none focus:border-brand-primary/50 leading-relaxed ${generatingOutline ? 'opacity-50' : ''}`}
+                    className={`w-full h-80 bg-bg-input border border-border-soft rounded-xl p-6 text-text-main font-mono text-sm outline-none focus:border-brand-primary/50 leading-relaxed ${generatingOutline ? 'opacity-50' : ''}`}
                     placeholder="Khung sườn cốt truyện sẽ hiển thị tại đây. Bạn có thể tự do chỉnh sửa..."
                     disabled={generatingOutline}
                   />
@@ -935,12 +954,11 @@ export default function CreatePage() {
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 flex flex-col lg:flex-row gap-6 h-auto lg:h-[calc(100dvh-180px)]">
               {/* Left Column: Progress & Controls */}
               <div className="w-full lg:w-[350px] xl:w-[450px] flex flex-col gap-4 shrink-0 min-h-0">
-                <div>
-                  <h2 className="text-2xl font-bold text-text-main">Giao việc cho AI</h2>
-                  <p className="text-text-muted mb-2">Điều khiển AI tiến hành sáng tác dựa trên thiết lập.</p>
+                <div className="mb-3">
+                  <p className="text-text-muted">Điều khiển AI tiến hành sáng tác dựa trên thiết lập.</p>
                 </div>
                 <GlassCard className={`flex-1 flex flex-col p-0 overflow-hidden relative border-border-soft/50 shadow-2xl lg:h-auto ${chapters.length === 0 ? 'h-auto' : 'h-[350px] sm:h-[500px]'}`}>
-                  <div className="p-5 border-b border-border-soft bg-black/40">
+                  <div className="p-5 border-b border-border-soft bg-bg-input">
                     <h2 className="text-xl font-bold text-text-main mb-3">Tiến Trình Sáng Tác</h2>
                     <div className="flex flex-wrap items-center gap-3 text-sm text-text-muted mb-5">
                       <span className="font-bold">Nhớ:</span>
@@ -1033,7 +1051,7 @@ export default function CreatePage() {
                     </div>
                   </GlassCard>
                 ) : (
-                  <div className="flex-1 flex items-center justify-center border-2 border-dashed border-border-soft rounded-2xl bg-bg-panel text-text-subtle p-6 text-center">
+                  <div className="flex-1 flex items-center justify-center border-2 border-dashed border-border-soft rounded-2xl bg-bg-input text-text-subtle p-6 text-center">
                     <p className="text-sm sm:text-lg">Bấm "Bắt Đầu Sinh Truyện" để AI tiến hành viết.<br/>Nội dung chương đang viết sẽ hiển thị trực tiếp tại đây.</p>
                   </div>
                 )}

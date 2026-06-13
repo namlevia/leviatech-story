@@ -805,11 +805,12 @@ func (g *NovelGenerator) ExtractAndSaveLore(projectID, characterSetting, worldSe
 	}
 
 	prompt := fmt.Sprintf(`Hãy trích xuất danh sách các nhân vật, địa danh, thế lực, cảnh giới, vật phẩm từ đoạn văn bản thiết lập dưới đây.
-Trả về DUY NHẤT một mảng JSON hợp lệ chứa các object. KHÔNG GIẢI THÍCH GÌ THÊM, KHÔNG THÊM BẤT KỲ VĂN BẢN NÀO BÊN NGOÀI MẢNG JSON.
+Trả về DUY NHẤT một mảng JSON hợp lệ chứa các object. KHÔNG GIẢI THÍCH GÌ THÊM, KHÔNG TẠO BẢNG MARKDOWN, KHÔNG THÊM BẤT KỲ VĂN BẢN NÀO BÊN NGOÀI MẢNG JSON.
 LƯU Ý ĐỂ TRÁNH LỖI JSON (QUAN TRỌNG): 
 - Tất cả keys và values kiểu chuỗi PHẢI được bọc trong dấu ngoặc kép kép ("). Tuyệt đối KHÔNG dùng dấu nháy đơn (').
 - Nếu nội dung có chứa dấu ngoặc kép ("), hãy đổi nó thành dấu nháy đơn (') để tránh phá vỡ JSON.
 - Tuyệt đối KHÔNG dùng ký tự xuống dòng (enter/newline) bên trong chuỗi string. Hãy viết liền trên 1 dòng hoặc dùng \n.
+- KHÔNG tạo bất kỳ cấu trúc bảng nào (không dùng ký tự |). Toàn bộ dữ liệu phải nằm đúng chuẩn format JSON.
 
 Cấu trúc mảng JSON mẫu yêu cầu:
 [
