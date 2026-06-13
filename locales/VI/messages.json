@@ -17,9 +17,9 @@
         "create": "Sáng tác từ đầu",
         "continue_tab": "Viết tiếp dự án",
         "export": "Xuất & Chia sẻ",
-        "projects": "📂 Quản lý dự án",
-        "settings": "⚙️ Cài đặt hệ thống",
-        "about": "ℹ️ Giới thiệu"
+        "projects": "Quản lý dự án",
+        "settings": "Cài đặt hệ thống",
+        "about": "Giới thiệu"
     },
     "rewrite": {
         "header": "### Tải lên tiểu thuyết → Chọn chế độ → Xử lý thông minh",
