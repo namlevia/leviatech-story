@@ -316,7 +316,7 @@ export const api = {
       body: JSON.stringify(data),
     });
     const json = await res.json().catch(() => ({}));
-    if (!res.ok || json.success === false) throw new Error(json.message || 'Failed to fetch models');
+    if (!res.ok || json.success === false) throw new Error(json.message || json.error || 'Failed to fetch models');
     return json;
   },
 
@@ -327,7 +327,7 @@ export const api = {
       body: JSON.stringify(data),
     });
     const json = await res.json().catch(() => ({}));
-    if (!res.ok || json.success === false) throw new Error(json.message || 'Failed to test connection');
+    if (!res.ok || json.success === false) throw new Error(json.message || json.error || 'Failed to test connection');
     return json;
   },
 
