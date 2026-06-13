@@ -17,9 +17,9 @@
         "create": "Create from Scratch",
         "continue_tab": "Continue Project",
         "export": "Export & Share",
-        "projects": "📂 Project Management",
-        "settings": "⚙️ System Settings",
-        "about": "ℹ️ About"
+        "projects": "Project Management",
+        "settings": "System Settings",
+        "about": "About"
     },
     "rewrite": {
         "header": "### Upload Novel → Select Mode → Smart Process",
