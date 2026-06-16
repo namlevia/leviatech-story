@@ -1,0 +1,106 @@
+[
+    {
+        "name": "Mượt mà tự nhiên, cốt truyện chặt chẽ, nhân vật tinh tế",
+        "description": "Văn phong trơn tru, dễ đọc, mạch truyện logic xuyên suốt không có sạn. Xây dựng tâm lý và hành động nhân vật sâu sắc, nhất quán."
+    },
+    {
+        "name": "Văn phong đẹp, ý cảnh sâu xa",
+        "description": "Sử dụng từ ngữ trau chuốt, giàu hình ảnh và các phép tu từ. Tập trung miêu tả cảnh vật, nội tâm nhân vật để tạo ra một không gian nghệ thuật đầy cảm xúc."
+    },
+    {
+        "name": "Nhịp nhanh, cốt truyện kịch tính",
+        "description": "Tập trung vào hành động, xung đột và diễn biến câu chuyện. Cắt giảm tối đa miêu tả thừa thãi, đưa người đọc đi từ bất ngờ này đến bất ngờ khác."
+    },
+    {
+        "name": "Mô tả tinh tế, cảm xúc phong phú",
+        "description": "Chú trọng vào việc thể hiện cảm xúc, rung động tinh vi của nhân vật. Các chi tiết nhỏ trong bối cảnh và tương tác được dùng để tô đậm không khí truyện."
+    },
+    {
+        "name": "Hài hước thú vị, nhẹ nhàng vui vẻ",
+        "description": "Sử dụng ngôn ngữ hóm hỉnh, tình huống hài hước dở khóc dở cười. Xoay quanh những mẩu chuyện đời thường hoặc hành trình nhẹ nhàng mang tính giải trí cao."
+    },
+    {
+        "name": "Cổ phong nhã vận cổ điển",
+        "description": "Ngôn từ trang nghiêm, Hán Việt dày (thiên địa vô tình, đạo hữu, tiên tử...), câu văn dài, triết lý Đạo/Phật nặng, miêu tả thơ mộng thiên địa. Ít đối thoại hiện đại. (Ví dụ: Nhĩ Căn - Tiên Nghịch, Cầu Ma)."
+    },
+    {
+        "name": "Sảng khoái cực độ (Sảng văn)",
+        "description": "Câu ngắn gọn, nhịp nhanh, miêu tả chiến đấu 'một chưởng phá thiên', lặp motif sảng (cười lạnh, mắt lóe sát cơ, giận dữ ngút trời). Đối thoại mạnh mẽ, đánh mặt liên tục."
+    },
+    {
+        "name": "Hắc ám u ám",
+        "description": "Văn lạnh lẽo, tàn nhẫn, miêu tả tâm lý đen tối, giết chóc chi tiết máu me, thế giới bi quan, ít sảng khoái. (Ví dụ: Cổ Chân Nhân)."
+    },
+    {
+        "name": "Hài hước lầy lội",
+        "description": "Đối thoại troll, main mặt dày tự trào, pha meme + cổ phong, câu văn nhẹ nhàng vui nhộn, nhiều tình huống 'lầy'. (Ví dụ: Nhất Niệm Vĩnh Hằng)."
+    },
+    {
+        "name": "Miêu tả chi tiết chậm rãi",
+        "description": "Xây dựng cực kỹ (luyện đan, trận pháp, bí cảnh), câu dài, chậm burn, ít hành động nhanh, tập trung 'nghề nghiệp tu luyện'. (Ví dụ: Phàm Nhân Tu Tiên)."
+    },
+    {
+        "name": "Triết lý nội tâm sâu sắc",
+        "description": "Đoạn độc thoại dài về đạo tâm, nhân quả, nhân sinh, văn trầm lắng suy tư. (Ví dụ: Tiên Nghịch phần sau)."
+    },
+    {
+        "name": "Hỗn hợp hiện đại cổ phong",
+        "description": "Pha từ hiện đại (level up, cheat, vibe), đối thoại hơi Gen Z nhưng giữ khung cổ. (Xu hướng truyện mới lai)."
+    },
+    {
+        "name": "Ngọt sủng rắc đường",
+        "description": "Văn phong mềm mại, ấm áp, tương tác nam nữ chính cực kỳ \"ngọt ngào\", không cẩu huyết, không ngược, mọi hiểu lầm đều giải quyết nhanh gọn."
+    },
+    {
+        "name": "Hồi hộp giật gân (Huyền nghi)",
+        "description": "Câu văn ngắn gọn, chú trọng miêu tả không khí u ám, lạnh lẽo, dẫn dắt tâm lý rùng rợn, tạo điểm mù và plot twist liên tục. Tốc độ dồn dập."
+    },
+    {
+        "name": "Điền văn sinh hoạt (Chậm nhiệt / Slice of Life)",
+        "description": "Nhịp điệu cực kỳ chậm rãi. Tập trung vào miêu tả nấu ăn, trồng trọt, đối thoại gia đình ấm cúng. Câu văn bình dị, không drama to tát, mang tính \"chữa lành\"."
+    },
+    {
+        "name": "Trang bức vả mặt (Hệ thống / Đô thị sảng văn)",
+        "description": "Kết cấu chương kiểu \"bị khinh bỉ -> thể hiện tài năng -> mọi người khiếp sợ\". Ngôn từ mang tính phóng đại cảm xúc của đám đông (hít một hơi cạn khí, mở to hai mắt, run lẩy bẩy). Nhấn mạnh vào sự chênh lệch đẳng cấp."
+    },
+    {
+        "name": "Thế giới tinh tế / Sci-fi (Cơ giáp)",
+        "description": "Sử dụng nhiều thuật ngữ khoa học viễn tưởng, không gian, thiết bị công nghệ cao, gen, tinh hạm. Câu văn gãy gọn, logic, tập trung vào chiến đấu mô phỏng và chiến thuật vĩ mô."
+    },
+    {
+        "name": "Quan trường quyền mưu (Cung đấu / Gia đấu)",
+        "description": "Từ ngữ hoa mỹ, vòng vèo, một câu mang nhiều tầng ý nghĩa ẩn dụ. Đối thoại đầy tính toán, giấu giếm sát cơ, ít hành động bạo lực trực tiếp, chủ yếu đấu trí bằng ngôn từ và lợi ích."
+    },
+    {
+        "name": "Thanh xuân vườn trường",
+        "description": "Câu văn trong sáng, nhẹ nhàng, đan xen những suy nghĩ ngây ngô hoặc bồng bột của tuổi trẻ. Miêu tả nhiều về trường lớp, thầy cô, rung động đầu đời, áp lực thi cử."
+    },
+    {
+        "name": "Ngược luyến tàn tâm (Ngược văn)",
+        "description": "Cốt truyện đầy hiểu lầm, bi kịch dồn dập. Câu văn xoáy sâu vào nỗi đau thể xác lẫn tinh thần của nhân vật, miêu tả nước mắt, sự tuyệt vọng, sự giằng xé nội tâm. Kết cấu thường đẩy nhân vật vào đường cùng."
+    },
+    {
+        "name": "Vô hạn lưu (Nhiệm vụ sinh tử)",
+        "description": "Nhịp độ cực nhanh, dồn dập. Chuyển cảnh logic giữa các thế giới khác nhau. Tập trung vào tính toán luật chơi (rules), giải đố sinh tử. Áp lực thời gian đè nặng trong từng câu chữ."
+    },
+    {
+        "name": "Quần tượng liệt truyện (Nhiều nhân vật chính)",
+        "description": "Không tập trung vào một cá nhân mà miêu tả đan xen nhiều góc nhìn (POV). Cần sự tinh tế trong việc thay đổi giọng văn tùy theo nhân vật đang làm trung tâm. Bối cảnh rộng lớn, sử thi."
+    },
+    {
+        "name": "Quân sự chiến tranh",
+        "description": "Sử dụng thuật ngữ quân sự, vũ khí học, chiến lược chiến thuật. Văn phong trầm hùng, miêu tả sắc nét sự khốc liệt của chiến trường, máu và mồ hôi, tinh thần đồng đội nồng đậm."
+    },
+    {
+        "name": "Đam mỹ/Bách hợp tinh tế",
+        "description": "Đào sâu vào cảm xúc, sự phát triển tình cảm tự nhiên giữa các nhân vật đồng giới. Miêu tả sự thấu hiểu nội tâm, những rung động nhỏ nhất, có thể lồng ghép bối cảnh hiện đại, cổ trang hoặc viễn tưởng."
+    },
+    {
+        "name": "Đồng nhân (Fanfiction)",
+        "description": "Bắt chước sát nhất có thể giọng văn và tính cách nhân vật của tác phẩm gốc (Ví dụ: HP, Naruto, Marvel). Kết hợp các tình tiết nguyên tác với sự phát triển sự kiện mới của tác giả."
+    },
+    {
+        "name": "Võng du eSports",
+        "description": "Sử dụng ngôn ngữ game thủ (combat, gank, AP, AD, loot đồ...). Tốc độ trận đấu nhanh, mô phỏng thao tác bàn phím, con chuột, tâm sinh lý thi đấu đỉnh cao và tiếng hò reo của khán đài."
+    }
+]

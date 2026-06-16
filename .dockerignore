@@ -1,0 +1,61 @@
+# ============================================
+# LeviaTech Story - Docker Ignore
+# ============================================
+
+# Version control
+.git
+.gitignore
+.dockerignore
+.github
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Go (Backend)
+/levia_api
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+
+# Next.js & Node.js (Frontend)
+frontend/node_modules/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+frontend/.next/
+frontend/out/
+
+# Data & Local files
+/data/*
+!/data/*.json
+/logs/
+/exports/
+/cache/
+/backups/
+/project_temp/
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# OS & IDE files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo

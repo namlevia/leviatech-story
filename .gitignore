@@ -1,0 +1,81 @@
+# ============================================
+# LeviaTech Story
+# ============================================
+
+# ============================================
+# Tệp tin môi trường và bí mật (Cực kỳ quan trọng)
+# ============================================
+.env
+.env.*
+!.env.example
+*.pem
+
+# ============================================
+# Dữ liệu & Lưu trữ (Không đưa lên mạng)
+# ============================================
+/data/*
+!/data/*.json
+/logs/
+/exports/
+/cache/
+/backups/
+/project_temp/
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# ============================================
+# Go (Backend)
+# ============================================
+# Các tệp thực thi sau khi biên dịch
+/levia_api
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Tệp kiểm thử và log
+*.test
+*.out
+
+# Thư mục phụ thuộc (nếu dùng go mod vendor)
+vendor/
+
+# ============================================
+# Next.js & Node.js (Frontend)
+# ============================================
+# Cài đặt thư viện
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Tệp biên dịch Next.js
+.next/
+out/
+build/
+
+# ============================================
+# Hệ điều hành & IDE (Code Editors)
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+.vscode/
+.idea/
+*.swp
+*.swo
+/api
+data/*.db*
+scripts/
+
+leviatech-story*
+logs.txt

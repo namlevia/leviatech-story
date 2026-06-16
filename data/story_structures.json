@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Không chọn — tự do",
+        "description": "AI sẽ tự do sáng tạo cốt truyện mà không bị gò bó vào khuôn mẫu cụ thể nào."
+    },
+    {
+        "name": "Cấu trúc 3 Hồi",
+        "description": "Gồm: Mở đầu (Thiết lập), Thân bài (Đối mặt thử thách), và Kết luận (Giải quyết). Cấu trúc kinh điển, dễ hiểu và dễ phát triển, phù hợp với hầu hết các thể loại."
+    },
+    {
+        "name": "Hành trình Anh hùng",
+        "description": "Nhân vật chính nhận lời kêu gọi, trải qua thử thách, vấp ngã, thức tỉnh sức mạnh và chiến thắng trở về. Đặc biệt phù hợp cho truyện Fantasy, Tiên hiệp, Kỳ ảo."
+    },
+    {
+        "name": "Isekai / Hệ Thống",
+        "description": "Nhân vật chuyển sinh hoặc nhận được hệ thống (bàn tay vàng). Tập trung vào nâng cấp, khám phá thế giới mới và thu thập tài nguyên/đồng đội."
+    },
+    {
+        "name": "Lát cắt cuộc sống",
+        "description": "Nhẹ nhàng, đời thường, ít xung đột lớn. Tập trung vào sự phát triển nội tâm, tình cảm và các mối quan hệ (Slice of Life/Chữa lành)."
+    },
+    {
+        "name": "Trinh thám / Giải đố",
+        "description": "Cốt truyện xoay quanh một bí ẩn lớn. Các manh mối được hé lộ dần qua từng giai đoạn, dẫn đến một cú twist hoặc lời giải đáp bất ngờ ở cuối."
+    }
+]

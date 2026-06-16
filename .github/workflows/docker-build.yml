@@ -1,0 +1,66 @@
+name: Build and Push Multi-arch Docker Image
+
+on:
+  push:
+    branches:
+      - main # Action sẽ chạy khi có code push lên nhánh main
+    tags:
+      - 'v*.*.*' # Hoặc khi bạn tạo release tag mới (ví dụ: v1.0.0)
+
+env:
+  REGISTRY: ghcr.io
+  # Biến này sẽ tự động lấy tên repo của bạn: namlevia/tinix-story
+  IMAGE_NAME: ${{ github.repository }} 
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write # Cấp quyền để Action có thể push image lên GHCR
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 1. Cài đặt QEMU: Bắt buộc phải có để giả lập CPU arm64 trên máy chủ x86 của GitHub
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # 2. Cài đặt Docker Buildx: Công cụ hỗ trợ build multi-platform của Docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 3. Đăng nhập vào GitHub Container Registry bằng token có sẵn của GitHub
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 4. Tự động trích xuất tag và label cho Docker dựa trên nhánh hoặc tag của Git
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=branch
+            type=ref,event=tag
+            type=sha,format=short
+
+      # 5. Tiến hành Build và Push cho cả 2 kiến trúc
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # Sử dụng GitHub Actions Cache để tăng tốc độ build cho các lần sau
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
