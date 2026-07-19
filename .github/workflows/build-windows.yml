@@ -1,0 +1,87 @@
+name: Build Windows Executable
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows-amd64:
+    name: Build Windows amd64 Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+
+      - name: Build Frontend (Static Export)
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build Go Binary & Package Windows Release
+        run: |
+          export CGO_ENABLED=0
+          export GOOS=windows
+          export GOARCH=amd64
+
+          TARGET_DIR="leviatech-story-windows-amd64"
+          
+          echo "Building Windows executable..."
+          mkdir -p "out/${TARGET_DIR}/frontend"
+          mkdir -p "out/${TARGET_DIR}/default_data"
+          
+          # Build Go executable
+          go build -ldflags="-s -w" -o "out/${TARGET_DIR}/levia_api.exe" ./cmd/api
+          
+          # Copy static frontend, locales, default data and batch launcher
+          cp -r frontend/out "out/${TARGET_DIR}/frontend/out"
+          cp -r locales "out/${TARGET_DIR}/"
+          cp data/*.json "out/${TARGET_DIR}/default_data/"
+          cp start_windows.bat "out/${TARGET_DIR}/"
+          
+          # Compress into ZIP package
+          cd out
+          zip -r "${TARGET_DIR}.zip" "${TARGET_DIR}"
+          cd ..
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LeviaTech-Story-Windows-amd64
+          path: out/leviatech-story-windows-amd64.zip
+          retention-days: 30
+
+      - name: Upload Release Asset (On Tag)
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: out/leviatech-story-windows-amd64.zip
+          generate_release_notes: true

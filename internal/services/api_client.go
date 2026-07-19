@@ -139,6 +139,7 @@ func (a *APIClient) Generate(messages []openai.ChatCompletionMessage, useCache b
 			timeout = 60
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
+		
 		resp, err := client.CreateChatCompletion(ctx, req)
 		cancel()
 
@@ -210,17 +211,16 @@ func (a *APIClient) GenerateStream(messages []openai.ChatCompletionMessage, ch c
 			Temperature: float32(genCfg.Temperature),
 			TopP:        float32(genCfg.TopP),
 			MaxTokens:   genCfg.MaxTokens,
-			Stream:      true,
 		}
 
 		timeout := backend.Timeout
 		if timeout <= 0 {
 			timeout = 60
 		}
-		ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second*5) // longer timeout for streaming
+		ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second*5) // longer timeout
 		defer cancel()
 		
-		stream, err := client.CreateChatCompletionStream(ctx, req)
+		resp, err := client.CreateChatCompletion(ctx, req)
 		if err != nil {
 			waitTime := baseWait * float64(int(2)<<retry)
 			log.Printf("API error (%s): %v, wait %.2fs", backend.Name, err, waitTime)
@@ -228,33 +228,14 @@ func (a *APIClient) GenerateStream(messages []openai.ChatCompletionMessage, ch c
 			continue
 		}
 
-		hasContent := false
-		for {
-			response, err := stream.Recv()
-			if err != nil {
-				// EOF or error
-				stream.Close()
-				if !hasContent {
-					// if no content received at all, maybe retry
-					break 
-				}
-				ch <- StreamChunk{Success: true, Content: "", Done: true}
+		if len(resp.Choices) > 0 {
+			content := resp.Choices[0].Message.Content
+			log.Printf("Stream request fulfilled synchronously: Length=%d", len(content))
+			if content != "" {
+				content = a.stripReasoning(content)
+				ch <- StreamChunk{Success: true, Content: content, Done: false}
 				return
 			}
-
-			if len(response.Choices) > 0 {
-				delta := response.Choices[0].Delta.Content
-				log.Printf("Stream received: Delta=%q, FinishReason=%q", delta, response.Choices[0].FinishReason)
-				if delta != "" {
-					hasContent = true
-					ch <- StreamChunk{Success: true, Content: delta, Done: false}
-				}
-			}
-		}
-		
-		if hasContent {
-			// If we broke out due to EOF and had content, we already returned
-			return
 		}
 	}
 
