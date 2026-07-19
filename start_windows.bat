@@ -2,6 +2,9 @@
 chcp 65001 > NUL
 title LeviaTech Story - Server
 
+:: Set current working directory to the directory of this batch file
+cd /d "%~dp0"
+
 echo ===================================================
 echo     LeviaTech Story - Windows Launcher
 echo ===================================================
@@ -22,8 +25,8 @@ echo Dang khoi dong server LeviaTech Story tai http://localhost:1997 ...
 echo (Vui long khong dong cua so nay khi dang su dung)
 echo.
 
-:: Open browser automatically
-start "" "http://localhost:1997"
+:: Open browser automatically after 2 seconds delay to allow server initialization
+start /b "" cmd /c "timeout /t 2 /nobreak >nul & start http://localhost:1997"
 
 :: Run Go API executable
 if exist "levia_api.exe" (
@@ -31,6 +34,9 @@ if exist "levia_api.exe" (
 ) else if exist "leviatech-story.exe" (
     leviatech-story.exe
 ) else (
-    echo [ERROR] Khong tim thay file executable (.exe)!
-    pause
+    echo [ERROR] Khong tim thay file executable (levia_api.exe)!
 )
+
+echo.
+echo Server da dung hoac gap loi. Nhan phim bat ky de thoat...
+pause
