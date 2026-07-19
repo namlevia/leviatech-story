@@ -29,8 +29,8 @@ echo LOG SERVER GO (VUI LONG KHONG DONG CUA SO NAY):
 echo ===================================================
 echo.
 
-:: Open browser automatically after 3 seconds in background
-start /b "" cmd /c "timeout /t 3 /nobreak >nul & start http://localhost:1997"
+:: Open browser automatically after 3 seconds delay using ping (safe in batch)
+start "" cmd /c "ping 127.0.0.1 -n 4 >nul & start http://localhost:1997"
 
 :: Run Go API executable directly in this window
 if exist "levia_api.exe" (
@@ -38,7 +38,7 @@ if exist "levia_api.exe" (
 ) else if exist "leviatech-story.exe" (
     leviatech-story.exe
 ) else (
-    echo [ERROR] Khong tim thay file executable (levia_api.exe)!
+    echo [ERROR] Khong tim thay file levia_api.exe
 )
 
 echo.
