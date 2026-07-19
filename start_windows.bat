@@ -1,12 +1,12 @@
 @echo off
 chcp 65001 > NUL
-title LeviaTech Story - Server
+title LeviaTech Story - Server Console
 
-:: Set current working directory to the directory of this batch file
+:: Fix working directory to batch file folder
 cd /d "%~dp0"
 
 echo ===================================================
-echo     LeviaTech Story - Windows Launcher
+echo     LeviaTech Story - Windows Server Launcher
 echo ===================================================
 echo.
 
@@ -21,14 +21,18 @@ if exist "default_data" (
     xcopy /n /y /d "default_data\*.json" "data\" >nul 2>&1
 )
 
-echo Dang khoi dong server LeviaTech Story tai http://localhost:1997 ...
-echo (Vui long khong dong cua so nay khi dang su dung)
+echo [1/2] Dang khoi tao du lieu va thu muc...
+echo [2/2] Chuan bi mo trinh duyet sau 3 giay (http://localhost:1997)...
+echo.
+echo ===================================================
+echo LOG SERVER GO (VUI LONG KHONG DONG CUA SO NAY):
+echo ===================================================
 echo.
 
-:: Open browser automatically after 2 seconds delay to allow server initialization
-start /b "" cmd /c "timeout /t 2 /nobreak >nul & start http://localhost:1997"
+:: Open browser automatically after 3 seconds in background
+start /b "" cmd /c "timeout /t 3 /nobreak >nul & start http://localhost:1997"
 
-:: Run Go API executable
+:: Run Go API executable directly in this window
 if exist "levia_api.exe" (
     levia_api.exe
 ) else if exist "leviatech-story.exe" (
@@ -38,5 +42,9 @@ if exist "levia_api.exe" (
 )
 
 echo.
-echo Server da dung hoac gap loi. Nhan phim bat ky de thoat...
+echo ===================================================
+echo Server da ngung hoac gap loi.
+echo Chi tiet log co the xem trong file: logs\leviatech_story.log
+echo Nhan phim bat ky de thoat...
+echo ===================================================
 pause
